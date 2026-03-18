@@ -11,7 +11,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from sqlalchemy import DateTime, Integer, String, event
-from sqlalchemy.orm import Mapped, Session, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
 
@@ -55,6 +55,7 @@ class AuditLog(Base):
 
 
 # ── Append-only enforcement ──────────────────────────────────────────
+
 
 def _block_audit_update(mapper, connection, target):
     """Raise an error when attempting to UPDATE an audit log record.

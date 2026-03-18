@@ -37,8 +37,12 @@ async def get_audit_logs(
     user_id: Optional[int] = Query(None, description="Filter by acting user ID"),
     action: Optional[str] = Query(None, description="Filter by action verb"),
     resource_type: Optional[str] = Query(None, description="Filter by resource type"),
-    start_date: Optional[datetime] = Query(None, description="Include logs on or after this date"),
-    end_date: Optional[datetime] = Query(None, description="Include logs on or before this date"),
+    start_date: Optional[datetime] = Query(
+        None, description="Include logs on or after this date"
+    ),
+    end_date: Optional[datetime] = Query(
+        None, description="Include logs on or before this date"
+    ),
     page: int = Query(1, ge=1, description="Page number"),
     per_page: int = Query(50, ge=1, le=100, description="Records per page"),
     db: Session = Depends(get_db),

@@ -21,10 +21,13 @@ class TestUserCreation:
 
     def test_admin_create_user(self, client: TestClient):
         """Admin should be able to create a new user."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS["admin"]["username"],
-            "password": TEST_USERS["admin"]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS["admin"]["username"],
+                "password": TEST_USERS["admin"]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         response = client.post(
@@ -45,10 +48,13 @@ class TestUserCreation:
 
     def test_admin_create_user_short_password(self, client: TestClient):
         """Passwords shorter than 12 characters should be rejected."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS["admin"]["username"],
-            "password": TEST_USERS["admin"]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS["admin"]["username"],
+                "password": TEST_USERS["admin"]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         response = client.post(
@@ -65,10 +71,13 @@ class TestUserCreation:
 
     def test_admin_create_duplicate_username(self, client: TestClient):
         """Duplicate username should return 409."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS["admin"]["username"],
-            "password": TEST_USERS["admin"]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS["admin"]["username"],
+                "password": TEST_USERS["admin"]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         response = client.post(
@@ -89,10 +98,13 @@ class TestUserListing:
 
     def test_admin_list_users(self, client: TestClient):
         """Admin should be able to list all users."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS["admin"]["username"],
-            "password": TEST_USERS["admin"]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS["admin"]["username"],
+                "password": TEST_USERS["admin"]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         response = client.get("/users/", headers=auth_header(token))
@@ -108,10 +120,13 @@ class TestUserGet:
 
     def test_admin_get_user(self, client: TestClient):
         """Admin should be able to retrieve a specific user."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS["admin"]["username"],
-            "password": TEST_USERS["admin"]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS["admin"]["username"],
+                "password": TEST_USERS["admin"]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         response = client.get("/users/1", headers=auth_header(token))
@@ -120,10 +135,13 @@ class TestUserGet:
 
     def test_admin_get_nonexistent_user(self, client: TestClient):
         """Getting a non-existent user should return 404."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS["admin"]["username"],
-            "password": TEST_USERS["admin"]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS["admin"]["username"],
+                "password": TEST_USERS["admin"]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         response = client.get("/users/99999", headers=auth_header(token))
@@ -135,10 +153,13 @@ class TestUserUpdate:
 
     def test_admin_update_user_role(self, client: TestClient):
         """Admin should be able to update a user's role."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS["admin"]["username"],
-            "password": TEST_USERS["admin"]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS["admin"]["username"],
+                "password": TEST_USERS["admin"]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         # Get users to find the viewer's ID
@@ -170,10 +191,13 @@ class TestRBACEnforcement:
     @pytest.mark.parametrize("role", ["analyst", "auditor", "viewer"])
     def test_non_admin_cannot_list_users(self, client: TestClient, role: str):
         """Non-admin roles should receive 403 on GET /users/."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS[role]["username"],
-            "password": TEST_USERS[role]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS[role]["username"],
+                "password": TEST_USERS[role]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         response = client.get("/users/", headers=auth_header(token))
@@ -182,10 +206,13 @@ class TestRBACEnforcement:
     @pytest.mark.parametrize("role", ["analyst", "auditor", "viewer"])
     def test_non_admin_cannot_create_user(self, client: TestClient, role: str):
         """Non-admin roles should receive 403 on POST /users/."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS[role]["username"],
-            "password": TEST_USERS[role]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS[role]["username"],
+                "password": TEST_USERS[role]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         response = client.post(
@@ -203,10 +230,13 @@ class TestRBACEnforcement:
     @pytest.mark.parametrize("role", ["analyst", "auditor", "viewer"])
     def test_non_admin_cannot_delete_user(self, client: TestClient, role: str):
         """Non-admin roles should receive 403 on DELETE /users/{id}."""
-        login_resp = client.post("/auth/login", json={
-            "username": TEST_USERS[role]["username"],
-            "password": TEST_USERS[role]["password"],
-        })
+        login_resp = client.post(
+            "/auth/login",
+            json={
+                "username": TEST_USERS[role]["username"],
+                "password": TEST_USERS[role]["password"],
+            },
+        )
         token = login_resp.json()["access_token"]
 
         response = client.delete("/users/1", headers=auth_header(token))

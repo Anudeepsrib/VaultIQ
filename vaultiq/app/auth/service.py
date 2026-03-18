@@ -22,6 +22,7 @@ _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__round
 
 # ── Password helpers ─────────────────────────────────────────
 
+
 def hash_password(plain: str) -> str:
     """Hash a plaintext password with bcrypt (cost factor 12).
 
@@ -49,6 +50,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 # ── JWT helpers ──────────────────────────────────────────────
 
+
 def create_access_token(
     data: dict,
     expires_delta: timedelta | None = None,
@@ -69,8 +71,7 @@ def create_access_token(
     """
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + (
-        expires_delta
-        or timedelta(minutes=settings.access_token_expire_minutes)
+        expires_delta or timedelta(minutes=settings.access_token_expire_minutes)
     )
     to_encode.update({"exp": expire, "type": "access"})
     return jwt.encode(

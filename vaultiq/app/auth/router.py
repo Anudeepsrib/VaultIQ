@@ -57,7 +57,10 @@ async def login(
     if user is None or not verify_password(body.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"error": "invalid_credentials", "message": "Invalid username or password"},
+            detail={
+                "error": "invalid_credentials",
+                "message": "Invalid username or password",
+            },
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -105,7 +108,10 @@ async def refresh_token(
     if payload is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"error": "invalid_token", "message": "Refresh token is invalid or expired"},
+            detail={
+                "error": "invalid_token",
+                "message": "Refresh token is invalid or expired",
+            },
         )
 
     if payload.get("type") != "refresh":

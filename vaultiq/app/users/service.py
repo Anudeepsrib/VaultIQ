@@ -120,7 +120,11 @@ def update_user(db: Session, user_id: int, payload: UserUpdate) -> Optional[User
         return None
 
     if payload.email is not None:
-        existing = db.query(User).filter(User.email == payload.email, User.id != user_id).first()
+        existing = (
+            db.query(User)
+            .filter(User.email == payload.email, User.id != user_id)
+            .first()
+        )
         if existing:
             raise ValueError(f"Email '{payload.email}' already exists")
         user.email = payload.email

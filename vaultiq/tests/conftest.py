@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.auth.service import create_access_token, hash_password
@@ -92,6 +92,7 @@ def _create_test_users(db):
 
 # ── Fixtures ─────────────────────────────────────────────────
 
+
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
     """Create all tables once per test session and tear down afterward."""
@@ -104,6 +105,7 @@ def setup_database():
     test_engine.dispose()
     # Clean up test database file
     import os
+
     if os.path.exists("./test_vaultiq.db"):
         os.remove("./test_vaultiq.db")
 
@@ -145,11 +147,13 @@ def _make_token(role: str) -> str:
         Encoded JWT access token string.
     """
     user_data = TEST_USERS[role]
-    return create_access_token({
-        "sub": user_data["username"],
-        "role": role,
-        "user_id": 1,  # Approximation — actual IDs assigned at creation
-    })
+    return create_access_token(
+        {
+            "sub": user_data["username"],
+            "role": role,
+            "user_id": 1,  # Approximation — actual IDs assigned at creation
+        }
+    )
 
 
 @pytest.fixture()

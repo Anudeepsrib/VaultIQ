@@ -13,7 +13,6 @@ All output is JSON-formatted for machine parsing.
 from __future__ import annotations
 
 import time
-from typing import Callable
 
 import structlog
 from fastapi import Request, Response

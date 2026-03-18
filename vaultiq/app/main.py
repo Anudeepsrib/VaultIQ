@@ -47,9 +47,11 @@ def _seed_admin(db_session) -> None:
     Args:
         db_session: An active SQLAlchemy session.
     """
-    existing = db_session.query(User).filter(
-        User.username == settings.seed_admin_username
-    ).first()
+    existing = (
+        db_session.query(User)
+        .filter(User.username == settings.seed_admin_username)
+        .first()
+    )
 
     if existing is None:
         admin = User(
@@ -117,7 +119,9 @@ def create_app() -> FastAPI:
 
     # ── Global Exception Handlers ────────────────────────────────
     @app.exception_handler(Exception)
-    async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    async def global_exception_handler(
+        request: Request, exc: Exception
+    ) -> JSONResponse:
         """Catch all unhandled exceptions and return structured JSON.
 
         Never exposes stack traces or internal details to the client.
@@ -170,7 +174,7 @@ def create_app() -> FastAPI:
 
     # ── Rate Limiting ────────────────────────────────────────────
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
 
     # ── CORS ─────────────────────────────────────────────────────
     app.add_middleware(
