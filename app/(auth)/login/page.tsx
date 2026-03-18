@@ -5,10 +5,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background grid-texture flex flex-col items-center justify-center p-4">
       {/* Logo */}
       <div className="mb-8 text-center">
-        <h1 className="text-4xl font-serif italic">
-          <span className="text-accent">Vault</span>
-          <span className="text-text-primary font-mono not-italic">IQ</span>
-        </h1>
+        <img src="/logo.png" alt="VaultIQ" className="h-16 w-auto mx-auto mb-4" />
         <p className="mt-2 text-text-secondary text-sm">
           Financial Intelligence. Stays Here.
         </p>

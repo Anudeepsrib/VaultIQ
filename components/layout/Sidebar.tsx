@@ -83,16 +83,18 @@ export function Sidebar() {
       {/* Logo */}
       <div className="h-16 flex items-center justify-center border-b border-border">
         <Link href="/documents" className="flex items-center gap-1">
-          <span className={cn('font-serif italic text-accent text-xl', isCollapsed && 'hidden')}>
-            Vault
-          </span>
+          <img
+            src="/logo.png"
+            alt="VaultIQ"
+            className={cn('h-8 w-auto', isCollapsed ? 'hidden' : 'block')}
+          />
           <span
             className={cn(
               'font-mono text-text-primary text-xl',
               isCollapsed && 'text-accent'
             )}
           >
-            IQ
+            {isCollapsed && 'IQ'}
           </span>
         </Link>
       </div>
