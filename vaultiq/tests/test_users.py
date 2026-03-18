@@ -31,13 +31,13 @@ class TestUserCreation:
             "/users/",
             json={
                 "username": "new_analyst",
-                "email": "new_analyst@test.local",
+                "email": "new_analyst@example.com",
                 "password": "NewAnalyst1234!",
                 "role": "analyst",
             },
             headers=auth_header(token),
         )
-        assert response.status_code == 201
+        assert response.status_code == 201, response.text
         data = response.json()
         assert data["username"] == "new_analyst"
         assert data["role"] == "analyst"
@@ -55,7 +55,7 @@ class TestUserCreation:
             "/users/",
             json={
                 "username": "shortpass_user",
-                "email": "short@test.local",
+                "email": "short@example.com",
                 "password": "Short123!",
                 "role": "viewer",
             },
@@ -75,13 +75,13 @@ class TestUserCreation:
             "/users/",
             json={
                 "username": TEST_USERS["admin"]["username"],
-                "email": "duplicate@test.local",
+                "email": "duplicate@example.com",
                 "password": "DuplicateUser123!",
                 "role": "viewer",
             },
             headers=auth_header(token),
         )
-        assert response.status_code == 409
+        assert response.status_code == 409, response.text
 
 
 class TestUserListing:
@@ -192,7 +192,7 @@ class TestRBACEnforcement:
             "/users/",
             json={
                 "username": "forbidden_user",
-                "email": "forbidden@test.local",
+                "email": "forbidden@example.com",
                 "password": "ForbiddenUser123!",
                 "role": "viewer",
             },

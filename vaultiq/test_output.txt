@@ -1,0 +1,149 @@
+C:\Users\anude\AppData\Local\Programs\Python\Python313\Lib\site-packages\pytest_asyncio\plugin.py:207: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+============================= test session starts =============================
+platform win32 -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0 -- C:\Users\anude\AppData\Local\Programs\Python\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\anude\Documents\GitHub\VaultIQ\vaultiq
+plugins: anyio-4.7.0, Faker-40.1.2, langsmith-0.3.45, asyncio-0.25.3, cov-7.0.0, timeout-2.4.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None
+collecting ... collected 31 items
+
+tests/test_auth.py::TestLogin::test_login_success PASSED                 [  3%]
+tests/test_auth.py::TestLogin::test_login_invalid_password PASSED        [  6%]
+tests/test_auth.py::TestLogin::test_login_nonexistent_user PASSED        [  9%]
+tests/test_auth.py::TestLogin::test_login_empty_username PASSED          [ 12%]
+tests/test_auth.py::TestTokenRefresh::test_refresh_success PASSED        [ 16%]
+tests/test_auth.py::TestTokenRefresh::test_refresh_invalid_token PASSED  [ 19%]
+tests/test_auth.py::TestTokenRefresh::test_refresh_with_access_token PASSED [ 22%]
+tests/test_auth.py::TestGetMe::test_get_me_success PASSED                [ 25%]
+tests/test_auth.py::TestGetMe::test_get_me_no_token PASSED               [ 29%]
+tests/test_auth.py::TestGetMe::test_get_me_invalid_token PASSED          [ 32%]
+tests/test_auth.py::TestAllRolesCanLogin::test_role_login[admin] PASSED  [ 35%]
+tests/test_auth.py::TestAllRolesCanLogin::test_role_login[analyst] PASSED [ 38%]
+tests/test_auth.py::TestAllRolesCanLogin::test_role_login[auditor] PASSED [ 41%]
+tests/test_auth.py::TestAllRolesCanLogin::test_role_login[viewer] PASSED [ 45%]
+tests/test_users.py::TestUserCreation::test_admin_create_user FAILED     [ 48%]
+tests/test_users.py::TestUserCreation::test_admin_create_user_short_password PASSED [ 51%]
+tests/test_users.py::TestUserCreation::test_admin_create_duplicate_username FAILED [ 54%]
+tests/test_users.py::TestUserListing::test_admin_list_users PASSED       [ 58%]
+tests/test_users.py::TestUserGet::test_admin_get_user PASSED             [ 61%]
+tests/test_users.py::TestUserGet::test_admin_get_nonexistent_user PASSED [ 64%]
+tests/test_users.py::TestUserUpdate::test_admin_update_user_role PASSED  [ 67%]
+tests/test_users.py::TestRBACEnforcement::test_non_admin_cannot_list_users[analyst] PASSED [ 70%]
+tests/test_users.py::TestRBACEnforcement::test_non_admin_cannot_list_users[auditor] PASSED [ 74%]
+tests/test_users.py::TestRBACEnforcement::test_non_admin_cannot_list_users[viewer] PASSED [ 77%]
+tests/test_users.py::TestRBACEnforcement::test_non_admin_cannot_create_user[analyst] PASSED [ 80%]
+tests/test_users.py::TestRBACEnforcement::test_non_admin_cannot_create_user[auditor] PASSED [ 83%]
+tests/test_users.py::TestRBACEnforcement::test_non_admin_cannot_create_user[viewer] PASSED [ 87%]
+tests/test_users.py::TestRBACEnforcement::test_non_admin_cannot_delete_user[analyst] PASSED [ 90%]
+tests/test_users.py::TestRBACEnforcement::test_non_admin_cannot_delete_user[auditor] PASSED [ 93%]
+tests/test_users.py::TestRBACEnforcement::test_non_admin_cannot_delete_user[viewer] PASSED [ 96%]
+tests/test_users.py::TestHealthCheck::test_health_no_auth PASSED         [100%]
+tests/test_users.py::TestHealthCheck::test_health_no_auth ERROR          [100%]
+
+=================================== ERRORS ====================================
+__________ ERROR at teardown of TestHealthCheck.test_health_no_auth ___________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_database():
+        """Create all tables once per test session and tear down afterward."""
+        Base.metadata.create_all(bind=test_engine)
+        db = TestSessionLocal()
+        _create_test_users(db)
+        db.close()
+        yield
+        Base.metadata.drop_all(bind=test_engine)
+        # Clean up test database file
+        import os
+        if os.path.exists("./test_vaultiq.db"):
+>           os.remove("./test_vaultiq.db")
+E           PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: './test_vaultiq.db'
+
+tests\conftest.py:107: PermissionError
+---------------------------- Captured stdout setup ----------------------------
+2026-03-18 14:30:44 [info     ] database_tables_created
+2026-03-18 14:30:44 [info     ] seed_admin_exists              username=admin
+---------------------------- Captured stdout call -----------------------------
+2026-03-18 14:30:44 [info     ] http_request                   client_ip=testclient elapsed_ms=0.22 method=GET path=/health status_code=200 user_id=None
+-------------------------- Captured stdout teardown ---------------------------
+2026-03-18 14:30:44 [info     ] application_shutdown
+================================== FAILURES ===================================
+___________________ TestUserCreation.test_admin_create_user ___________________
+
+self = <tests.test_users.TestUserCreation object at 0x00000264C8F1C7D0>
+client = <starlette.testclient.TestClient object at 0x00000264C90C8380>
+
+    def test_admin_create_user(self, client: TestClient):
+        """Admin should be able to create a new user."""
+        login_resp = client.post("/auth/login", json={
+            "username": TEST_USERS["admin"]["username"],
+            "password": TEST_USERS["admin"]["password"],
+        })
+        token = login_resp.json()["access_token"]
+    
+        response = client.post(
+            "/users/",
+            json={
+                "username": "new_analyst",
+                "email": "new_analyst@test.local",
+                "password": "NewAnalyst1234!",
+                "role": "analyst",
+            },
+            headers=auth_header(token),
+        )
+>       assert response.status_code == 201
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_users.py:40: AssertionError
+---------------------------- Captured stdout setup ----------------------------
+2026-03-18 14:30:40 [info     ] database_tables_created
+2026-03-18 14:30:40 [info     ] seed_admin_exists              username=admin
+---------------------------- Captured stdout call -----------------------------
+2026-03-18 14:30:40 [info     ] http_request                   client_ip=testclient elapsed_ms=190.99 method=POST path=/auth/login status_code=200 user_id=None
+2026-03-18 14:30:40 [info     ] http_request                   client_ip=testclient elapsed_ms=8.06 method=POST path=/users/ status_code=422 user_id=None
+-------------------------- Captured stdout teardown ---------------------------
+2026-03-18 14:30:41 [info     ] application_shutdown
+____________ TestUserCreation.test_admin_create_duplicate_username ____________
+
+self = <tests.test_users.TestUserCreation object at 0x00000264C8EA5CD0>
+client = <starlette.testclient.TestClient object at 0x00000264C8FDDE10>
+
+    def test_admin_create_duplicate_username(self, client: TestClient):
+        """Duplicate username should return 409."""
+        login_resp = client.post("/auth/login", json={
+            "username": TEST_USERS["admin"]["username"],
+            "password": TEST_USERS["admin"]["password"],
+        })
+        token = login_resp.json()["access_token"]
+    
+        response = client.post(
+            "/users/",
+            json={
+                "username": TEST_USERS["admin"]["username"],
+                "email": "duplicate@test.local",
+                "password": "DuplicateUser123!",
+                "role": "viewer",
+            },
+            headers=auth_header(token),
+        )
+>       assert response.status_code == 409
+E       assert 422 == 409
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_users.py:84: AssertionError
+---------------------------- Captured stdout setup ----------------------------
+2026-03-18 14:30:41 [info     ] database_tables_created
+2026-03-18 14:30:41 [info     ] seed_admin_exists              username=admin
+---------------------------- Captured stdout call -----------------------------
+2026-03-18 14:30:41 [info     ] http_request                   client_ip=testclient elapsed_ms=201.52 method=POST path=/auth/login status_code=200 user_id=None
+2026-03-18 14:30:41 [info     ] http_request                   client_ip=testclient elapsed_ms=2.55 method=POST path=/users/ status_code=422 user_id=None
+-------------------------- Captured stdout teardown ---------------------------
+2026-03-18 14:30:41 [info     ] application_shutdown
+=========================== short test summary info ===========================
+FAILED tests/test_users.py::TestUserCreation::test_admin_create_user - assert...
+FAILED tests/test_users.py::TestUserCreation::test_admin_create_duplicate_username
+ERROR tests/test_users.py::TestHealthCheck::test_health_no_auth - PermissionE...
+==================== 2 failed, 29 passed, 1 error in 6.94s ====================

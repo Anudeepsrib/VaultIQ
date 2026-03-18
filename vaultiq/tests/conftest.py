@@ -45,25 +45,25 @@ def override_get_db():
 TEST_USERS = {
     "admin": {
         "username": "test_admin",
-        "email": "admin@test.local",
+        "email": "admin@example.com",
         "password": "AdminPass12345!",
         "role": UserRole.admin,
     },
     "analyst": {
         "username": "test_analyst",
-        "email": "analyst@test.local",
+        "email": "analyst@example.com",
         "password": "AnalystPass123!",
         "role": UserRole.analyst,
     },
     "auditor": {
         "username": "test_auditor",
-        "email": "auditor@test.local",
+        "email": "auditor@example.com",
         "password": "AuditorPass123!",
         "role": UserRole.auditor,
     },
     "viewer": {
         "username": "test_viewer",
-        "email": "viewer@test.local",
+        "email": "viewer@example.com",
         "password": "ViewerPass12345!",
         "role": UserRole.viewer,
     },
@@ -101,6 +101,7 @@ def setup_database():
     db.close()
     yield
     Base.metadata.drop_all(bind=test_engine)
+    test_engine.dispose()
     # Clean up test database file
     import os
     if os.path.exists("./test_vaultiq.db"):
