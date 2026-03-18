@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  # ── VaultIQ API ──────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vaultiq-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./data/vaultiq.db
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-CHANGE-ME-TO-A-RANDOM-64-CHAR-STRING}
+      - JWT_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+      - REFRESH_TOKEN_EXPIRE_DAYS=7
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_DEFAULT_MODEL=phi4
+      - CHROMA_PERSIST_DIR=/app/chroma_data
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
+      - RATE_LIMIT_PER_MINUTE=100
+      - SEED_ADMIN_USERNAME=${SEED_ADMIN_USERNAME:-admin}
+      - SEED_ADMIN_PASSWORD=${SEED_ADMIN_PASSWORD:-AdminPassword123!}
+      - SEED_ADMIN_EMAIL=${SEED_ADMIN_EMAIL:-admin@vaultiq.local}
+    volumes:
+      - vaultiq-db:/app/data
+      - chroma-data:/app/chroma_data
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ── Ollama LLM Runtime ───────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: vaultiq-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  vaultiq-db:
+    driver: local
+  chroma-data:
+    driver: local
+  ollama-models:
+    driver: local
