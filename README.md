@@ -210,6 +210,63 @@ For support, email support@vaultiq.internal or contact your system administrator
 
 ---
 
+## Architecture Flow
+
+```mermaid
+flowchart TB
+    subgraph Client["Client Layer"]
+        Browser["Web Browser"]
+    end
+
+    subgraph Frontend["Frontend (Next.js 14)"]
+        Auth["(auth)/login"]
+        Dashboard["(dashboard)/"]
+        Components["Components (shadcn/ui)"]
+        Stores["Zustand Stores"]
+        Hooks["TanStack Query"]
+    end
+
+    subgraph API["API Layer"]
+        NextAPI["/api/* Routes"]
+        Middleware["RBAC Middleware"]
+    end
+
+    subgraph Backend["Backend (FastAPI)"]
+        FastAPI["FastAPI Server"]
+        JWT["JWT Auth"]
+        Services["Services Layer"]
+    end
+
+    subgraph Data["Data Layer"]
+        SQL["SQLAlchemy + Alembic"]
+        Chroma["ChromaDB (Vectors)"]
+        Ollama["Ollama (LLM)"]
+    end
+
+    Browser -->|HTTPS| Auth
+    Browser -->|HTTPS| Dashboard
+    Auth -->|Login| NextAPI
+    Dashboard -->|API Calls| NextAPI
+    Dashboard --> Components
+    Dashboard --> Stores
+    Dashboard --> Hooks
+    NextAPI --> Middleware
+    Middleware -->|Validate JWT| FastAPI
+    FastAPI --> JWT
+    FastAPI --> Services
+    Services --> SQL
+    Services -->|Embeddings| Chroma
+    Services -->|Inference| Ollama
+
+    style Client fill:#1a1a1a,stroke:#2dd4bf,stroke-width:2px,color:#fff
+    style Frontend fill:#1a1a1a,stroke:#2dd4bf,stroke-width:2px,color:#fff
+    style API fill:#1a1a1a,stroke:#2dd4bf,stroke-width:2px,color:#fff
+    style Backend fill:#1a1a1a,stroke:#2dd4bf,stroke-width:2px,color:#fff
+    style Data fill:#1a1a1a,stroke:#2dd4bf,stroke-width:2px,color:#fff
+```
+
+---
+
 <div align="center">
   <p>Built with security and privacy in mind.</p>
 </div>
